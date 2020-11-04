@@ -31,11 +31,24 @@ class UserController extends Controller
     //用户登录
     public function login(Request $request)
     {
-        $res = Auth::guard('web')->attempt(['name' => $request->name,
+        $token = Auth::guard('api')->attempt(['name' => $request->name,
             'password' => $request->password]);
-        if($res){
-            return $this->setStatusCode(201)->success('用户登录成功');
+        if($token){
+            return $this->setStatusCode(201)->success([
+                'token' => 'bearer ' . $token
+            ]);
         }
-        return '用户登陆失败';
+        return $this->failed('账号货密码错误', 400);
+    }
+    //用户退出
+    public function logout()
+    {
+        Auth::guard('api')->logout();
+        return $this->success('退出成功');
+    }
+    public function info()
+    {
+        $user = Auth::guard('api')->user();
+        return $this->success(new UserResource($user));
     }
 }

@@ -50,6 +50,7 @@ class Handler extends ExceptionHandler
 
         //ajax请求我们才捕捉异常
         if ($request->ajax()){
+
             //将方法拦截到我们自己的ExceptionReport
             $reporter = ExceptionReport::make($exception);
             if($reporter->shouldReturn()){
